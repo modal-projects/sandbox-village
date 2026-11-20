@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sandbox Village</title>
+<meta name="description" content="A 16-bit village where every house is a Modal Sandbox and the villagers think with small models on Modal's Model APIs. Walk in and talk to them.">
+<meta name="theme-color" content="#181818">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Sandbox Village">
+<meta property="og:description" content="A 16-bit village where every house is a Modal Sandbox and the villagers think with small models on Modal's Model APIs. Walk in and talk to them.">
+<meta property="og:image" content="__ORIGIN__/og.png">
+<meta property="og:url" content="__ORIGIN__/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="game" aria-label="The village. Walk with the arrow keys or WASD, press E to interact."></canvas>
+<canvas id="labels" aria-hidden="true"></canvas>
+<div id="fade" aria-hidden="true"></div>
+
+<header id="topbar">
+  <div class="top-left">
+    <div class="chip title">Sandbox Village</div>
+    <div id="status" class="chip status" aria-live="off"><img class="mark" src="brand/modal-mark.svg" alt="Modal"><span id="stat-sandboxes" class="lamp sandboxes">0 of 9 sandboxes running</span><span id="stat-brains"></span></div>
+  </div>
+  <div class="top-right">
+    <button id="sound-toggle" class="chip button" aria-pressed="true">Sound: on</button>
+    <button id="guide-toggle" class="chip button">What is this?</button>
+    <button id="hood-toggle" class="chip button" aria-expanded="false" aria-controls="hood">Under the hood</button>
+    <button id="almanac-toggle" class="chip button"><span>Almanac </span><b id="almanac-count">0/7</b><span id="almanac-just" aria-live="polite"></span></button>
+  </div>
+</header>
+
+<aside id="feed-panel" hidden aria-label="What the village is up to">
+  <ul id="feed-list"></ul>
+</aside>
+
+<a id="modal-badge" href="https://modal.com" target="_blank" rel="noopener" aria-label="Run on Modal">
+  <span>Run on</span><img src="brand/modal-logo-dark-background.svg" alt="Modal" height="18">
+</a>
+
+<aside id="hood" class="panel" hidden>
+  <div class="who"><h2>Under the hood</h2><button id="hood-close" class="x" aria-label="Close">×</button></div>
+  <p id="hood-summary" class="muted"></p>
+  <div id="hood-list"></div>
+  <p class="muted small">While this panel is open, a running commentary appears bottom left: every sandbox starting and stopping, every command, every line spoken.</p>
+  <p class="muted small">Each villager's home is one Modal Sandbox. Asleep means the sandbox is gone and only a filesystem snapshot is kept; walking up, or a neighbour knocking, starts a new sandbox from it. While this panel is open, the houses are labelled with their sandbox or snapshot IDs.</p>
+</aside>
+
+<div id="toasts" aria-live="polite"></div>
+
+<button id="prompt" class="chip button" hidden></button>
+
+<section id="inventory" hidden aria-label="Things you were given"></section>
+
+<section id="dialogue" hidden>
+  <div class="tabs">
+    <div id="dlg-tab"><strong id="dlg-name"></strong><span id="dlg-role"></span></div>
+    <span id="dlg-brain" class="lamp brain"></span>
+  </div>
+  <div class="talkbox panel">
+    <div class="speech">
+      <canvas id="dlg-face" width="24" height="24" aria-hidden="true"></canvas>
+      <div class="words">
+        <div id="dlg-log" aria-live="polite"></div>
+        <p id="dlg-status" class="muted"></p>
+      </div>
+      <button id="dlg-close" class="x" aria-label="Stop talking" title="Stop talking (Esc)">×</button>
+    </div>
+    <div class="next"><button id="dlg-next" type="button" class="send">Next</button></div>
+    <div class="answer">
+      <div id="dlg-asks" hidden></div>
+      <form id="dlg-form" autocomplete="off">
+        <input id="dlg-input" maxlength="600" placeholder="Or say anything…" aria-label="Say something" enterkeyhint="send" autocapitalize="sentences">
+        <button class="send">Say</button>
+      </form>
+    </div>
+  </div>
+  <div class="computer panel">
+    <div class="who"><strong id="feed-title"></strong><span class="muted small">live from the sandbox</span></div>
+    <div id="feed"></div>
+  </div>
+</section>
+
+<div id="overlay" hidden>
+  <div id="reader" class="panel" role="dialog" aria-modal="true">
+    <div class="who"><strong id="reader-title"></strong><span id="reader-sub" class="muted small"></span>
+      <button id="reader-close" class="x" aria-label="Close">×</button></div>
+    <div id="reader-body"></div>
+    <div id="reader-actions"></div>
+  </div>
+</div>
+
+<div id="welcome">
+  <h1 class="logo"><span>Sandbox</span> <span>Village</span></h1>
+  <div class="lockup"><span>a demo of</span><img src="brand/modal-logo-dark-background.svg" alt="Modal"></div>
+  <div class="card panel">
+    <p>Nine odd neighbours live here. Each house is a real computer, a <b>Modal Sandbox</b>. They think with small models on <b>Modal Model APIs</b>.</p>
+    <p class="choose"><b>Choose your character</b></p>
+    <div class="looks">
+      <canvas id="look-preview" width="48" height="36" role="img" aria-label="Your character"></canvas>
+      <div id="look-rows"></div>
+    </div>
+    <form id="welcome-form" autocomplete="off">
+      <label for="welcome-name">Your name</label>
+      <input id="welcome-name" maxlength="24" placeholder="Visitor" enterkeyhint="go" autocapitalize="words">
+      <button class="send">Walk in</button>
+    </form>
+    <p class="keys muted"><span class="desk"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> walk <span class="gap"></span><kbd>E</kbd> talk and look</span><span class="touch">Tap where you want to go. Tap the yellow button to talk and look.</span></p>
+  </div>
+</div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

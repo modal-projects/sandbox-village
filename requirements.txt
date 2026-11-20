@@ -1,0 +1,4 @@
+modal[api-proxy-support]>=1.6.3
+openai>=3.49
+fastapi[standard]>=0.115
+pytest>=8

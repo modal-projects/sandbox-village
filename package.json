@@ -1,0 +1,11 @@
+{
+  "name": "sandbox-village",
+  "private": true,
+  "description": "Only for the browser walk-through in tests/smoke.js. The game itself needs no Node.",
+  "scripts": {
+    "smoke": "node tests/smoke.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.63.0"
+  }
+}
